@@ -1,0 +1,111 @@
+
+
+
+<div class="layout" [class.profile-open]="isProfilePanelOpen">
+
+  <nav class="topbar"  *ngIf="auth.isLoggedIn()">
+    <a routerLink="/posts">Posts</a>
+    <a routerLink="/posts/create" *ngIf="auth.isLoggedIn()">Create Post</a>
+    <a routerLink="/posts/my" *ngIf="auth.isLoggedIn()">My Posts</a>
+    <!-- <a routerLink="/admin" *ngIf="auth.isAdmin()">Admin</a>
+    <a routerLink="/superadmin" *ngIf="auth.isSuperAdmin()">SuperAdmin</a> -->
+
+    <span class="spacer"></span>
+
+    <ng-container *ngIf="auth.isLoggedIn(); else loggedIn">
+      <div class="right-side">
+        <span>Hi, {{ auth.getUsername() }}</span>
+        <button  (click)="toggleProfilePanel()">Profile</button>
+     
+      </div>
+    </ng-container>
+
+    <ng-template #loggedIn>
+    
+    </ng-template>
+  </nav>
+
+  <!-- Slide-out profile panel -->
+  <aside class="profile-panel">
+    <header>
+      <div class="avatar">{{ avatarInitials }}</div>
+      <div class="names">
+        <strong>{{ auth.getUsername() }}</strong>
+        <!-- <small>{{ auth.getEmail?.() || '—' }}</small> -->
+      </div>
+      <button class="close" (click)="toggleProfilePanel()">✕</button>
+    </header>
+
+    <section class="links">
+      <a [routerLink]="['/profile']">View Profile</a>
+      <a [routerLink]="['/change-password']">Change Password</a>
+    
+      <a *ngIf="auth.isAdmin()" [routerLink]="['/admin']">Admin Dashboard</a>
+      <a *ngIf="auth.isSuperAdmin()" [routerLink]="['/superadmin']">SuperAdmin Dashboard</a>
+            <button class="logout"(click)="logout()">Logout</button>
+    </section>
+  </aside>
+
+  <!-- Main content shifts left when panel opens -->
+  <main class="content" (click)="closeProfilePanel()">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+
+
+
+
+
+<!-- <div class="layout" [class.profile-open]="isProfilePanelOpen">
+
+  <nav class="topbar">
+    <a routerLink="/posts">Posts</a>
+    <a routerLink="/posts/create" *ngIf="auth.isLoggedIn()">Create Post</a>
+    <a routerLink="/posts/my" *ngIf="auth.isLoggedIn()">My Posts</a>
+     <a routerLink="/admin" *ngIf="auth.isAdmin()">Admin</a>
+    <a routerLink="/superadmin" *ngIf="auth.isSuperAdmin()">SuperAdmin</a> -->
+
+    <!-- <span class="spacer"></span>
+
+    <ng-container *ngIf="!auth.isLoggedIn(); else loggedIn">
+      <a routerLink="/login">Login</a>
+      <a routerLink="/register">Register</a>
+    </ng-container>
+
+    <ng-template #loggedIn>
+      <div class="right-side">
+        <span>Hi, {{ auth.getUsername() }}</span>
+        <button  (click)="toggleProfilePanel()">See Profile</button>
+    
+      </div>
+    </ng-template>
+  </nav> -->
+
+  <!-- Slide-out profile panel -->
+   <!--
+  <aside class="profile-panel" *ngIf="isProfilePanelOpen">
+    <header>
+      <div class="avatar">{{ avatarInitials }}</div>
+      <div class="names">
+        <strong>{{ auth.getUsername() }}</strong>
+   
+      </div>
+         <section class="links">
+      <a [routerLink]="['/profile']">View Profile</a>
+      <a routerLink="/change-password">Change Password</a>
+    
+      <a *ngIf="auth.isAdmin()" [routerLink]="['/admin']">Admin Dashboard</a>
+      <a *ngIf="auth.isSuperAdmin()" [routerLink]="['/superadmin']">SuperAdmin Dashboard</a>
+            <button (click)="logout()">Logout</button>
+    </section>
+      <button class="close" (click)="toggleProfilePanel()">✕</button>
+    </header>
+
+ 
+  </aside>
+
+
+  <main class="content" (click)="closeProfilePanel()">
+    <router-outlet></router-outlet>
+  </main>
+</div> -->

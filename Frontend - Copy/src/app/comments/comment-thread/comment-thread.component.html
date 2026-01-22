@@ -1,0 +1,81 @@
+
+<div class="comments">
+  <h3 *ngIf="!comments.length && !isLoading">Comments</h3>
+
+  <div *ngIf="isLoading">Loading comments...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <ul *ngIf="comments.length">
+    <ng-container *ngFor="let c of comments">
+      <li>
+        <div class="comment">
+          <strong>{{ c.createdBy }}</strong>
+          <span>{{ c.createdAt | date: 'short' }}</span>
+          <p>{{ c.content }}</p>
+        <button class="reply-link" type="button" (click)="startReply(c.id)"> Reply  </button>   
+ 
+     
+        </div>
+
+        <!--  Recursive replies -->
+        <app-comment-thread
+          *ngIf="c.replies?.length"
+          [comments]="c.replies"
+          [postId]="postId">
+        </app-comment-thread>
+      </li>
+    </ng-container>
+  </ul>
+
+  <!-- Comment form -->
+  <div *ngIf="auth.isLoggedIn(); else loginToComment">
+    <h4 *ngIf="!replyingTo">Add a comment</h4>
+    <h4 *ngIf="replyingTo">Replying</h4>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <textarea rows="3" formControlName="content"></textarea>
+      <div>
+        <button type="submit" [disabled]="form.invalid || isSubmitting">
+          {{ isSubmitting ? 'Posting...' : 'Post' }}
+        </button>
+        <button type="button" *ngIf="replyingTo" (click)="cancelReply()">
+          Cancel reply
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <ng-template #loginToComment>
+    <p><a routerLink="/login">Log in</a> to comment.</p>
+  </ng-template>
+</div>
+<style>
+.comments ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.comment {
+  margin-bottom: 10px;
+}
+
+
+.comment a{
+  cursor:pointer
+}
+.reply-link {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  color: #007bff;    
+
+  font: inherit;       
+}
+
+.reply-link:hover {
+  color: #1db2db;        /* darker blue on hover */
+}
+
+</style>

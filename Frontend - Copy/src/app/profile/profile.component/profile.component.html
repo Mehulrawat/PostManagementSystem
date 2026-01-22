@@ -1,0 +1,19 @@
+<div class="page">
+  <h2>User Profile</h2>
+
+  <div class="profile-card">
+    <div class="avatar">{{ user.userName.charAt(0) }}</div>
+
+    <div class="profile-info">
+      <p><strong>Username:</strong> {{ user.userName }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Status:</strong> 
+        <span *ngIf="user.isActive && !user.isAutoDeactivated" class="success">Active</span>
+        <span *ngIf="!user.isActive || user.isAutoDeactivated" class="error">Inactive</span>
+      </p>
+      <p><strong>Created At:</strong> {{ user.createdAt | date:'medium' }}</p>
+      <p><strong>Roles:</strong> {{ user.roles.join(', ') }}</p>
+    </div>
+  </div>
+</div>
+

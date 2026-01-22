@@ -1,0 +1,51 @@
+
+<div class="page" *ngIf="post; else loadingOrError">
+  <h2>{{ post.title }}</h2>
+  <p><em>by {{ post.createdBy }} on {{ post.createdAt | date: 'short' }}</em></p>
+  <p>{{ post.content }}</p>
+
+  <hr />
+
+  <!-- Toggle Comments -->
+  <button class="toggle-btn" (click)="toggleComments(post.id)">
+    {{ expandedPostId === post.id ? 'Hide Comments' : 'Show Comments' }}
+  </button>
+
+  <div *ngIf="expandedPostId === post.id" class="comments-section">
+    <app-comment-thread [postId]="post.id"></app-comment-thread>
+  </div>
+</div>
+
+<ng-template #loadingOrError>
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+</ng-template>
+<style>
+  
+.page {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+
+.toggle-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.toggle-btn:hover {
+  background-color: #0056b3;
+}
+
+.comments-section {
+  margin-top: 15px;
+  padding: 10px;
+  border-top: 1px solid #ccc;
+}
+
+</style>

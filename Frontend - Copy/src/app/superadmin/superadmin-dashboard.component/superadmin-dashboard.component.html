@@ -1,0 +1,51 @@
+<div class="page">
+  <h2>SuperAdmin Dashboard</h2>
+
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <table *ngIf="!isLoading && users.length > 0">
+    <thead>
+      <tr>
+        <th>UserName</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Role</th>
+        <!-- <th>Created</th> -->
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of users">
+        <td>  {{ u.username }}</td>
+     
+        
+        <td>{{ u.email}}</td>
+        <td>{{ u.isActive ? 'Active' : 'Inactive' }}</td>
+<td>{{ (u?.roles ?? []).join(', ') }}</td>
+       
+<td class="actions">
+  <!-- Admin-tier actions -->
+  <button *ngIf="isAdmin(u)" (click)="suspend(u)">Suspend</button>
+
+ <button *ngIf="u.isActive==0" (click)="reinstate(u)">Reinstate</button>
+  <button *ngIf="isAdmin(u)" (click)="demote(u)">Demote</button>
+
+  <!-- Only normal user (has User but not Admin/SuperAdmin) -->
+  <button *ngIf="isNormalUser(u)" (click)="promote(u)">Promote</button>
+
+  <!-- Example: check specific role
+  <button *ngIf="hasRole(u, UserRole.Moderator)" (click)="demoteModerator(u)">Demote Moderator</button> -->
+
+  <button *ngIf="isNormalUser(u)" ( click)="delete(u)">Delete</button>
+</td>
+
+      </tr> 
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && users.length === 0">
+  No Users/Admins Found.
+  </div>
+</div>
+

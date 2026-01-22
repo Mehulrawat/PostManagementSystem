@@ -1,0 +1,22 @@
+
+<div class="page">
+  <h2>Posts</h2>
+
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div *ngIf="!isLoading && posts.length === 0">
+    No posts yet.
+  </div>
+
+  <ul>
+    <li *ngFor="let p of posts">
+      <a [routerLink]="['/posts', p.id]">
+        <strong>{{ p.title }}</strong>
+      </a>
+      <span>by {{ p.createdBy }} on {{ p.createdAt | date: 'short' }}</span>
+
+    </li>
+  </ul>
+</div>
+

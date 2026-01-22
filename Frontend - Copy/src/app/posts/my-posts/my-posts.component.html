@@ -1,0 +1,40 @@
+<div class="page">
+  <h2>My Posts</h2>
+
+  <div *ngIf="isLoading">Loading...</div>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <table *ngIf="!isLoading && posts.length > 0">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Status</th>
+        <th>Created</th>
+        <!-- <th>Actions</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of posts">
+        <td>
+          <strong>
+          <a [routerLink]="['/posts', p.id]">{{ p.title }}</a>
+          </strong>
+        </td>
+        <td>{{ statusLabel(p.status) }}</td>
+        <td>{{ p.createdAt | date: 'short' }}</td>
+        <td>
+          <!-- <button
+            *ngIf="p.status === postStatus.Draft"
+            (click)="submitForApproval(p)"
+          >
+            Submit for Approval
+          </button> -->
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && posts.length === 0">
+    You haven't created any posts yet.
+  </div>
+</div>
