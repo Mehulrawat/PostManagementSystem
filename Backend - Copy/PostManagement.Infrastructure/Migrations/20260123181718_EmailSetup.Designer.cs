@@ -9,11 +9,11 @@ using PostManagement.Infrastructure.Persistence;
 
 #nullable disable
 
-namespace PostManagement.Infrastructure.Migrations
+namespace postmanagement.infrastructure.Migrations
 {
     [DbContext(typeof(PostManagementDbContext))]
-    [Migration("20251202101017_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260123181718_EmailSetup")]
+    partial class EmailSetup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,10 +189,19 @@ namespace PostManagement.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EmailVerificationToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailVerificationTokenExpiresAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsAutoDeactivated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastActivityAt")
@@ -221,6 +230,7 @@ namespace PostManagement.Infrastructure.Migrations
                             Email = "mehul.superadmin@infinite.com",
                             IsActive = true,
                             IsAutoDeactivated = false,
+                            IsEmailVerified = false,
                             PasswordHash = "YgGCqK61yhrWjlITzYvnSlQcoBtcoNv+DazFfWxzfGA=",
                             Username = "mehul_superadmin"
                         });

@@ -1,9 +1,12 @@
 using PostManagement.Application.Contracts.Auth;
 using PostManagement.Application.Interfaces;
+using PostManagement.Application.Interfaces.Notification;
 using PostManagement.Application.Interfaces.Repositories;
 using PostManagement.Application.Interfaces.Security;
 using PostManagement.Domain.Entities;
 using PostManagement.Domain.Enums;
+using System.Net;
+using System.Security.Cryptography;
 
 
 namespace PostManagement.Application.Services;
@@ -19,14 +22,15 @@ public class AuthService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
-
+    private readonly INotificationService _notificationService;
     public AuthService(
         IUserRepository userRepository,
         IRoleRepository roleRepository,
         IUserRoleRepository userRoleRepository,
         IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher,
-        IJwtTokenGenerator jwtTokenGenerator)
+        IJwtTokenGenerator jwtTokenGenerator,
+        INotificationService notificationService)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
@@ -34,6 +38,7 @@ public class AuthService
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
         _jwtTokenGenerator = jwtTokenGenerator;
+        _notificationService= notificationService;
     }
 
     public async Task RegisterAsync(RegisterUserRequest request)
@@ -51,11 +56,21 @@ public class AuthService
             Email = request.Email,
             PasswordHash = _passwordHasher.Hash(request.Password),
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.Now,
+            IsEmailVerified = false
         };
+
+        // Generate secure verification token
+        var tokenBytes = RandomNumberGenerator.GetBytes(32);
+
+        
+        user.EmailVerificationToken = WebUtility.UrlEncode(Convert.ToBase64String(tokenBytes));
+
+        user.EmailVerificationTokenExpiresAt = DateTime.Now.AddMinutes(30);
 
         await _userRepository.AddAsync(user);
 
+        // Assign default role
         var userRole = await _roleRepository.GetByNameAsync(UserRoleName.User)
                        ?? throw new InvalidOperationException("Default role 'User' not found. Make sure roles are seeded.");
 
@@ -64,9 +79,15 @@ public class AuthService
             UserId = user.Id,
             RoleId = userRole.Id
         });
-
         await _unitOfWork.SaveChangesAsync();
+        // Send verification email
+        await _notificationService.SendEmailVerificationAsync(user.Email, user.EmailVerificationToken);
+    
+      
+
+    
     }
+
 
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -78,8 +99,11 @@ public class AuthService
 
         if (!_passwordHasher.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedAccessException("Invalid credentials.");
+        if (!user.IsEmailVerified)
+           throw new UnauthorizedAccessException("Email not verified.");
+        
 
-        user.LastActivityAt = DateTime.UtcNow;
+        user.LastActivityAt = DateTime.Now;
         await _unitOfWork.SaveChangesAsync();
 
         return await BuildLoginResponseAsync(user);
@@ -118,6 +142,8 @@ public class AuthService
             throw new UnauthorizedAccessException("Account is inactive. Please contact an administrator.");
     }
 
+
+    
     private async Task<LoginResponse> BuildLoginResponseAsync(User user)
     {
         var roles = await _userRoleRepository.GetRoleNamesForUserAsync(user.Id);

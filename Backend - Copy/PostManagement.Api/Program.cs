@@ -4,11 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PostManagement.Api.Security;
+using PostManagement.Application.Email;
 using PostManagement.Application.Interfaces;
+using PostManagement.Application.Interfaces.Notification;
 using PostManagement.Application.Interfaces.Repositories;
 using PostManagement.Application.Interfaces.Security;
 using PostManagement.Application.Services;
 using PostManagement.Infrastructure;
+using PostManagement.Infrastructure.Email;
+using PostManagement.Infrastructure.Notifications;
 using PostManagement.Infrastructure.Persistence;
 using PostManagement.Infrastructure.Repositories;
 using PostManagement.Infrastructure.Security;
@@ -108,6 +112,14 @@ builder.Services.AddScoped<CommentService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UserManagementService>();
 builder.Services.AddScoped<PasswordService>();
+
+//Email services 
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+builder.Services.AddScoped<INotificationService, EmailNotificationService>();
+
 
 
 // Authentication

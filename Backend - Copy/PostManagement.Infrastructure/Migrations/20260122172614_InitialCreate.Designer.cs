@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PostManagement.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using PostManagement.Infrastructure.Persistence;
 namespace postmanagement.infrastructure.Migrations
 {
     [DbContext(typeof(PostManagementDbContext))]
-    partial class PostManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260122172614_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -186,19 +189,10 @@ namespace postmanagement.infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmailVerificationToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EmailVerificationTokenExpiresAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsAutoDeactivated")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastActivityAt")
@@ -207,12 +201,6 @@ namespace postmanagement.infrastructure.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordResetToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PasswordResetTokenExpiresAt")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -233,7 +221,6 @@ namespace postmanagement.infrastructure.Migrations
                             Email = "mehul.superadmin@infinite.com",
                             IsActive = true,
                             IsAutoDeactivated = false,
-                            IsEmailVerified = false,
                             PasswordHash = "YgGCqK61yhrWjlITzYvnSlQcoBtcoNv+DazFfWxzfGA=",
                             Username = "mehul_superadmin"
                         });

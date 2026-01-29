@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PostManagement.Application.Interfaces;
 using PostManagement.Application.Interfaces.Repositories;
 using PostManagement.Domain.Entities;
 using PostManagement.Infrastructure.Persistence;
@@ -8,10 +9,13 @@ namespace PostManagement.Infrastructure.Repositories;
 public class UserRepository : IUserRepository
 {
     private readonly PostManagementDbContext _db;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UserRepository(PostManagementDbContext db)
+
+    public UserRepository(PostManagementDbContext db, IUnitOfWork unitOfWork)
     {
         _db = db;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<User?> GetByIdAsync(Guid id)
@@ -38,6 +42,10 @@ public class UserRepository : IUserRepository
     {
         return _db.Users.AnyAsync(u => u.Email == email);
     }
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        return await _db.Users.FirstOrDefaultAsync(u => u.Email == email);
+    }
 
     public Task<List<User>> GetAllAsync()
     {
@@ -49,4 +57,23 @@ public class UserRepository : IUserRepository
         _db.Users.Remove(user);
         return Task.CompletedTask;
     }
+
+    public async Task<User?> GetByEmailVerificationTokenAsync(string token)
+    {
+        return await _db.Users
+            .FirstOrDefaultAsync(u => u.EmailVerificationToken == token);
+    }
+    public async Task<User?> GetByPasswordResetTokenAsync(string token)
+    {
+        return await _db.Users
+           .FirstOrDefaultAsync(u => u.PasswordResetToken == token);
+    }
+
+    //public async Task UpdateAsync(User user)
+    //{
+    //    await _unitOfWork.SaveChangesAsync();
+    //    //_db.Users.Update(user);
+    //    //await _db.SaveChangesAsync();
+    //}
+
 }

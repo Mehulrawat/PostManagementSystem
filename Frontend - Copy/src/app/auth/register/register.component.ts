@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-register',
     standalone: true,
@@ -25,7 +26,8 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private auth: AuthService,
-    private router: Router
+    private router: Router,
+
   ) {}
 
   submit() {
@@ -39,7 +41,9 @@ export class RegisterComponent {
     this.auth.register(username!, email!, password!).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.successMessage = 'Registered successfully. You can now log in.';
+      
+        this.successMessage = 'Registered successfully.Please check your mail to verify.';
+
         setTimeout(() => this.router.navigate(['/login']), 1000);
       },
       error: err => {

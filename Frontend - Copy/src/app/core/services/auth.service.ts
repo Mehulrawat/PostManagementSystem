@@ -5,29 +5,27 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { LoginResponse } from '../models/user.model';
 import { Users } from '../models/admin.model';
+import { VerifyEmailService } from './verify-email.service'
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
   private readonly TOKEN_KEY = 'jwt_token';
   private readonly USERNAME_KEY = 'username';
   private readonly ROLES_KEY = 'roles';
- private readonly EMAIL_KEY='email';
-  
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private verifyEmailService: VerifyEmailService   // 👈 injected here
+  ) {}
 
   login(username: string, password: string): Observable<LoginResponse> {
     return this.http
-
-    .post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
+      .post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
         username,
         password
       })
-      .pipe(
-        tap(res => {
-          this.setSession(res);
-        })
-      );
+      .pipe(tap(res => this.setSession(res)));
   }
 
   register(username: string, email: string, password: string) {
@@ -36,6 +34,11 @@ export class AuthService {
       email,
       password
     });
+  }
+
+  // 👇 AuthService calling another service
+  verifyEmail(token: string): Observable<void> {
+    return this.verifyEmailService.verifyEmail(token);
   }
 
   private setSession(res: LoginResponse) {
@@ -57,7 +60,8 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
- getMe(): Observable<Users> {
+
+  getMe(): Observable<Users> {
     return this.http.get<Users>(`${environment.apiUrl}/me`);
   }
 
@@ -67,20 +71,14 @@ export class AuthService {
 
   getRoles(): string[] {
     const raw = localStorage.getItem(this.ROLES_KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
+    return raw ? JSON.parse(raw) : [];
   }
 
-  // getEmail():string|null{
-  //   return localStorage.getItem(this.EMAIL_KEY);
-  // }
-
   isAdmin(): boolean {
-    const roles = this.getRoles().map(r => r.toLowerCase());
-    return roles.includes('admin') || roles.includes('superadmin');
+    return this.getRoles().map(r => r.toLowerCase()).includes('admin');
   }
 
   isSuperAdmin(): boolean {
-    const roles = this.getRoles().map(r => r.toLowerCase());
-    return  roles.includes('superadmin');
+    return this.getRoles().map(r => r.toLowerCase()).includes('superadmin');
   }
 }

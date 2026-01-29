@@ -13,6 +13,7 @@ import { AdminGuard } from './core/guards/admin.guard';
 import { SuperAdminGuard } from './core/guards/superadmin.guard-guard';
 import { ChangePasswordComponent } from './password/change-password/change-password.component';
 import { UserProfileComponent } from './profile/profile.component/profile.component';
+import { VerifyEmailComponent } from './auth/verify-email/verify-email.component/verify-email.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -49,6 +50,8 @@ export const routes: Routes = [
 
  { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
 //  {path:'/profile', component:UserProfileComponent,canActivate:[AuthGuard]},
+
+{ path: 'verify-email', component: VerifyEmailComponent },
 
   { path: '**', redirectTo: 'posts' }
 ];

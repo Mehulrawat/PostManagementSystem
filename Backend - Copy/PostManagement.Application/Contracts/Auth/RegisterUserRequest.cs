@@ -13,8 +13,8 @@ public class RegisterUserRequest
 
     [Required]
     [EmailAddress(ErrorMessage = "Invalid email format")]
-    [RegularExpression(@"^(?!\.)(?!.*\.\.)[A-Za-z0-9.]+(?<!\.)@infinite\.com$",
-        ErrorMessage = "Email must use only letters, numbers, dots, or underscores before @ and must be an Infinite email"
+    [RegularExpression(@"^(?!\.)(?!.*\.\.)[A-Za-z0-9.]+(?<!\.)@gmail\.com$",
+        ErrorMessage = "Email must use only letters, numbers, dots, or underscores before @ and must be an Google email"
     )]
     public string Email { get; set; } = default!;
     [Required]
