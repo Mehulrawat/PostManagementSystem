@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>9495d4f7-427b-4fa9-beef-80a000926f16</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\PostManagement.Application\PostManagement.Application.csproj" />

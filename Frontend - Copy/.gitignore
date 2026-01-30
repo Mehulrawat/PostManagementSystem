@@ -6,14 +6,8 @@ Thumbs.db
 *.swp
 *.swo
 
-.vs/
 .vscode/
 .idea/
-
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
 
 ############################################
 # Angular / Node
@@ -36,37 +30,11 @@ pnpm-debug.log*
 .env
 .env.*
 !.env.example
- frontend/src/environments/environment*.ts
 
-############################################
-# .NET / Visual Studio
-############################################
-bin/
-obj/
-publish/
-out/
-
-############################################
-# .NET Environment & Secrets
-############################################
-
-secrets.json
-
-
-
-############################################
-# EF Core / Database
-############################################
-*.mdf
-*.ldf
-*.db
-*.db-journal
+# Angular environment files (optional)
+src/environments/environment*.ts
 
 ############################################
 # Logs
 ############################################
-logs/
 *.log
-
-
-
